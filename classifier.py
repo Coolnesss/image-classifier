@@ -7,7 +7,6 @@ import numpy as np
 train_X, train_y, test_X, test_y = load_CIFAR10("cifar-10-batches-py")
 
 
-
 N = 50000
 D = 32 * 32 * 3
 
@@ -35,22 +34,20 @@ model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
-model.add(Conv2D(64, (4, 4), activation='relu'))
+model.add(Conv2D(64, (2, 2), activation='relu'))
 
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.25))
 
-#model.add(Dropout(0.25))
 model.add(Dense(10, activation='softmax'))
-
 
 model.compile(loss='sparse_categorical_crossentropy',
               optimizer=keras.optimizers.Adadelta(),
               metrics=['accuracy'])
 
 
-model.fit(train_X, train_y, epochs=10, batch_size=64)
+model.fit(train_X, train_y, epochs=10, batch_size=32)
 
-loss_and_metrics = model.evaluate(test_X, test_y, batch_size=128)
+loss_and_metrics = model.evaluate(test_X, test_y, batch_size=32)
 print loss_and_metrics
