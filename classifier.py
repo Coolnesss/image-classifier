@@ -39,10 +39,8 @@ model.add(Flatten())
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.25))
 
-model.add(Dense(64, activation='relu'))
-model.add(Dense(128, activation='relu'))
-
-model.add(Dropout(0.25))
+model.add(Dense(256, activation='relu'))
+#model.add(Dropout(0.25))
 model.add(Dense(10, activation='softmax'))
 
 
