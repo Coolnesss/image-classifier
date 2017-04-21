@@ -21,7 +21,7 @@ print train_X.shape
 
 model = Sequential()
 
-model.add(Conv2D(32, kernel_size=(4, 4),
+model.add(Conv2D(128, kernel_size=(4, 4),
                  activation='relu',
                  input_shape=input_shape))
 
@@ -37,6 +37,10 @@ model.add(Dropout(0.25))
 
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
+model.add(Dropout(0.25))
+
+model.add(Dense(64, activation='relu'))
+model.add(Dense(128, activation='relu'))
 
 model.add(Dropout(0.25))
 model.add(Dense(10, activation='softmax'))
