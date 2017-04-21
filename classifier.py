@@ -35,11 +35,12 @@ model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.25))
 
+model.add(Conv2D(64, (4, 4), activation='relu'))
+
 model.add(Flatten())
 model.add(Dense(256, activation='relu'))
 model.add(Dropout(0.25))
 
-model.add(Dense(256, activation='relu'))
 #model.add(Dropout(0.25))
 model.add(Dense(10, activation='softmax'))
 
