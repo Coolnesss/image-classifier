@@ -21,7 +21,7 @@ print train_X.shape
 
 model = Sequential()
 
-model.add(Conv2D(32, kernel_size=(3, 3),
+model.add(Conv2D(32, kernel_size=(4, 4),
                  activation='relu',
                  input_shape=input_shape))
 
@@ -30,7 +30,7 @@ model.add(Conv2D(64, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Dropout(0.3))
 
-model.add(Conv2D(64, (3, 3), activation='relu'))
+model.add(Conv2D(64, (2, 2), activation='relu'))
 model.add(Dropout(0.3))
 model.add(Conv2D(128, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -49,7 +49,7 @@ model.compile(loss='sparse_categorical_crossentropy',
               metrics=['accuracy'])
 
 
-model.fit(train_X, train_y, epochs=10, batch_size=128)
+model.fit(train_X, train_y, epochs=10, batch_size=64)
 
 loss_and_metrics = model.evaluate(test_X, test_y, batch_size=128)
 print loss_and_metrics
