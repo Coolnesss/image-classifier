@@ -6,21 +6,9 @@ import os
 from keras.models import Sequential
 from keras.layers import Conv2D, MaxPooling2D
 from keras.layers import Activation, Dropout, Flatten, Dense
+from keras.models import load_model
 
-path, dirs, files = os.walk("pics").next()
-file_count = len(files)
-N = file_count
-D = (N, 480, 400, 3)
-X = np.zeros(D)
-print X.shape
-"""
-for (dirpath, dirnames, filenames) in os.walk("pics"):
-    i = 0
-    for filename in filenames:
-        x = cv2.imread("pics/"+filename)
-        X[i] = x
-        i += 1
-"""
+import h5py
 
 model = Sequential()
 model.add(Conv2D(32, (3, 3), input_shape=(150, 150, 3)))
@@ -30,10 +18,12 @@ model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(32, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.5))
 
 model.add(Conv2D(64, (3, 3)))
 model.add(Activation('relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
+model.add(Dropout(0.5))
 
 model.add(Flatten())  # this converts our 3D feature maps to 1D feature vectors
 model.add(Dense(64))
@@ -46,7 +36,7 @@ model.compile(loss='binary_crossentropy',
               optimizer='rmsprop',
               metrics=['accuracy'])
 
-batch_size = 16
+batch_size = 32
 
 # this is the augmentation configuration we will use for training
 train_datagen = ImageDataGenerator(
@@ -63,15 +53,37 @@ test_datagen = ImageDataGenerator(rescale=1./255)
 # subfolers of 'data/train', and indefinitely generate
 # batches of augmented image data
 train_generator = train_datagen.flow_from_directory(
-        'pics',  # this is the target directory
+        'pics/train',  # this is the target directory
         target_size=(150, 150),  # all images will be resized to 150x150
         batch_size=batch_size,
         class_mode='binary')  # since we use binary_crossentropy loss, we need binary labels
 
+validation_generator = test_datagen.flow_from_directory(
+    'pics/validation',
+    target_size=(150, 150),  # all images will be resized to 150x150
+    batch_size=batch_size,
+    class_mode='binary'
+)
 
-print train_generator
+test_generator = test_datagen.flow_from_directory(
+    'pics/test',
+    target_size=(150,150),
+    batch_size=batch_size,
+    class_mode='binary',
+    shuffle=False
+)
+# Uncomment to train
+"""
 model.fit_generator(
         train_generator,
-        steps_per_epoch=2000 // batch_size,
-        epochs=5)
+        validation_data=validation_generator,
+        validation_steps=800,
+        steps_per_epoch=500,
+        epochs=1)
 
+model.save("model.h5")
+"""
+
+model = load_model("model.h5")
+print test_generator.filenames
+print model.predict_generator(test_generator, steps=1)
